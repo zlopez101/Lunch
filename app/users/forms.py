@@ -1,5 +1,11 @@
 from flask_wtf import FlaskForm
-from wtforms.fields import StringField, TimeField, SubmitField, SelectField
+from wtforms.fields import (
+    StringField,
+    TimeField,
+    SubmitField,
+    SelectField,
+    PasswordField,
+)
 from wtforms.validators import DataRequired
 
 
@@ -14,14 +20,12 @@ class EmployeeOut(FlaskForm):
 class EmployeeLogin(FlaskForm):
 
     username = StringField("Username", validators=[DataRequired()])
-    password = StringField("Password", validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
 
 class ProfileForm(FlaskForm):
 
-    username = StringField("Username", validators=[DataRequired()])
-    password = StringField("Password", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired()])
     phone = StringField("Phone number", validators=[DataRequired()])
     preferred = SelectField(
