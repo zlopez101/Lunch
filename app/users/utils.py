@@ -1,5 +1,5 @@
 import os
-from bokeh.plotting import Figure, output_file, show
+from bokeh.plotting import figure, output_file, show
 
 from twilio.rest import Client
 

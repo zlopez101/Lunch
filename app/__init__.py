@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
-
+from app.config import Configuration
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret"
@@ -15,7 +15,11 @@ bcrypt = Bcrypt()
 
 @app.shell_context_processor
 def make_shell_context():
-    return {"db": db, "Employee": Employee}
+    return {
+        "db": db,
+        "Employee": Employee,
+        "LunchTime": LunchTime,
+    }
 
 
 @login_manager.user_loader

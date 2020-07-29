@@ -14,11 +14,14 @@ class Employee(db.Model, UserMixin):
     phone_number = db.Column(db.String(60))
     email = db.Column(db.String(60))
     preferred = db.Column(db.String(60))
+    lunchbreaks = db.relationship("LunchTime", backref="employee", lazy=True)
 
     def __repr__(self):
         return f"Employee({self.username})"
 
 
-# class LunchTime(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     timeIn = db.T
+class LunchTime(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    timeIn = db.Column(db.DateTime, nullable=False)
+    timeOut = db.Column(db.DateTime, nullable=False)
+    employee_id = db.Column(db.Integer, db.ForeignKey("employee.id"), nullable=False)

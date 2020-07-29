@@ -1,6 +1,7 @@
 from app import create_app
 from app.config import Configuration
 
+# export FLASK_ENV=development
 # export FLASK_APP=run.py:app
 
 app = create_app(Configuration)

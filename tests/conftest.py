@@ -1,7 +1,8 @@
 import pytest
 from app import create_app, db, bcrypt
 from app.config import Configuration_tester
-from app.models import Employee
+from app.models import Employee, LunchTime
+from datetime import datetime
 
 
 @pytest.fixture(scope="module")
@@ -10,13 +11,13 @@ def app_tester():
     # Flask provides a way to test your application by exposing the Werkzeug test Client
     # and handling the context locals for you.
     testing_client = app.test_client()
- 
+
     # Establish an application context before running the tests.
     ctx = app.app_context()
     ctx.push()
- 
+
     yield testing_client  # this is where the testing happens!
- 
+
     ctx.pop()
 
 
@@ -31,9 +32,21 @@ def init_database(scope="module"):
         username="JaneLong", password=bcrypt.generate_password_hash("differentpassword")
     )
 
+    lunchtime1 = lunchTime(
+        timeIn=datetime(2020, 7, 15, 12, 30),
+        timeOut=datetime(2020, 7, 15, 11, 30),
+        employee_id=1,
+    )
+    lunchtime2 = lunchTime(
+        timeIn=datetime(2020, 7, 15, 13, 30),
+        timeOut=datetime(2020, 7, 15, 12, 30),
+        employee_id=2,
+    )
+
     db.session.add(emp1)
     db.session.add(emp2)
-
+    db.session.add(lunchtime1)
+    db.session.add(lunchtime2)
     db.session.commit()
 
     yield db
