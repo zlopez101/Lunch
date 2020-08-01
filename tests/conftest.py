@@ -32,15 +32,15 @@ def init_database(scope="module"):
         username="JaneLong", password=bcrypt.generate_password_hash("differentpassword")
     )
 
-    lunchtime1 = lunchTime(
+    lunchtime1 = LunchTime(
         timeIn=datetime(2020, 7, 15, 12, 30),
         timeOut=datetime(2020, 7, 15, 11, 30),
-        employee_id=1,
+        employee_id=1,  # JohnDoe should be employee # 1
     )
-    lunchtime2 = lunchTime(
+    lunchtime2 = LunchTime(
         timeIn=datetime(2020, 7, 15, 13, 30),
         timeOut=datetime(2020, 7, 15, 12, 30),
-        employee_id=2,
+        employee_id=2,  # JaneLong should be employee # 2
     )
 
     db.session.add(emp1)

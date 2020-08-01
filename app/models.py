@@ -25,3 +25,8 @@ class LunchTime(db.Model):
     timeIn = db.Column(db.DateTime, nullable=False)
     timeOut = db.Column(db.DateTime, nullable=False)
     employee_id = db.Column(db.Integer, db.ForeignKey("employee.id"), nullable=False)
+
+    def _only_one_lunchtime_per_day(self, new_lunchtime):
+        """
+        A function that should check that there only is one lunch time per day per employee.
+        """

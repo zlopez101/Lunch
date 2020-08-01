@@ -13,7 +13,7 @@ users = Blueprint("users", __name__)
 @users.route("/<int:userid>", methods=["GET", "POST"])
 @login_required
 def lunchbuddy(userid):
-    chart = create_chart()
+    # chart = create_chart()
     form = EmployeeOut()
     employees = Employee.query.filter(
         Employee.username != Employee.query.filter_by(id=userid).first().username

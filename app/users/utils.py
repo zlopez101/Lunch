@@ -21,14 +21,22 @@ def send_messages(message, numbers, testing=False):
         message = client.messages.create(body=message, from_=from_, to=number)
 
 
-def create_chart():
+def create_chart(workers):
     """
     create a bar chart
+
+    Parameters
+
+    workers : a list of all workers. Employee.query.all()
     """
     p = figure(
         plot_width=800,
         plot_height=800,
         title="Lunch Times",
         x_axis_type="datetime",
-        y_axis_label="Worker",
+        y_range=[emp.username for emp in workers],
     )
+
+    # for worker in workers:
+    #     lunch = LunchTime.query.filter_by(employee_id=worker.id).
+
