@@ -1,7 +1,12 @@
 import os
-from bokeh.plotting import figure, output_file, show
-
+from datetime import datetime
+from bokeh.plotting import figure
+from bokeh.resources import CDN
+from bokeh.embed import file_html
+from bokeh.models import ColumnDataSource
 from twilio.rest import Client
+
+from app.models import LunchTime
 
 
 def send_messages(message, numbers, testing=False):
@@ -21,22 +26,62 @@ def send_messages(message, numbers, testing=False):
         message = client.messages.create(body=message, from_=from_, to=number)
 
 
-def create_chart(workers):
+def create_source(workers):
+    """
+    create the column data source for the chart
+    Should accept the list of workers, then retrieve the times for each worker and zip into ColumnDataSource
+    
+    Parameters
+    workers : a BaseQuery object of Employees ([emp.username for emp in Employee.query.all()])
+    """
+    # today = datetime.today()
+    # # right now there is no function to auto delete a LunchTime, so need to filter results
+    # _range = [
+    #     datetime(today.year, today.month, today.day, x) for x in [8, 18]
+    # ]  # creates a bottom and top filter.
+    dct = {
+        "workers": [],
+        "timeIn": [],
+        "timeOut": [],
+    }
+    for worker in workers:
+        dct["workers"].append(worker.username)
+        lunchtime = LunchTime.query.filter_by(employee_id=worker.id).all()[0]
+        dct["timeIn"].append(lunchtime.timeIn)
+        dct["timeOut"].append(lunchtime.timeOut)
+
+    return dct
+
+
+def create_chart(data):
     """
     create a bar chart
 
     Parameters
-
-    workers : a list of all workers. Employee.query.all()
+    data : a dictionary
+    # source : a ColumnDataSource created by `create_source` function
     """
+    source = ColumnDataSource(data)
     p = figure(
         plot_width=800,
-        plot_height=800,
+        plot_height=400,
         title="Lunch Times",
         x_axis_type="datetime",
-        y_range=[emp.username for emp in workers],
+        x_range=[datetime(2020, 8, 1, 8), datetime(2020, 8, 1, 17)],
+        y_range=data["workers"],
+        toolbar_location=None,
+        tools="",
     )
 
-    # for worker in workers:
-    #     lunch = LunchTime.query.filter_by(employee_id=worker.id).
+    p.hbar(
+        y="workers",
+        height=0.5,
+        left="timeOut",
+        right="timeIn",
+        color="color",
+        # legend_field="workers",
+        source=source,
+    )
+
+    return file_html(p, CDN, "Lunch Times scheduled")
 

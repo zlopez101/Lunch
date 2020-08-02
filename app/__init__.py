@@ -4,6 +4,7 @@ from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 from app.config import Configuration
 
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
@@ -17,8 +18,6 @@ bcrypt = Bcrypt()
 def make_shell_context():
     return {
         "db": db,
-        "Employee": Employee,
-        "LunchTime": LunchTime,
     }
 
 

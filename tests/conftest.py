@@ -5,6 +5,11 @@ from app.models import Employee, LunchTime
 from datetime import datetime
 
 
+# @pytest.fixture(scope="module")
+# def baseQuery():
+#     return Employee.query.all()
+
+
 @pytest.fixture(scope="module")
 def app_tester():
     app = create_app(Configuration_tester)

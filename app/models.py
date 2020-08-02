@@ -30,3 +30,4 @@ class LunchTime(db.Model):
         """
         A function that should check that there only is one lunch time per day per employee.
         """
+        pass
