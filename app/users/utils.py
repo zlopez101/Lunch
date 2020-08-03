@@ -45,15 +45,18 @@ def create_source(workers):
         "timeOut": [],
     }
     for worker in workers:
-        dct["workers"].append(worker.username)
-        lunchtime = LunchTime.query.filter_by(employee_id=worker.id).all()[0]
-        dct["timeIn"].append(lunchtime.timeIn)
-        dct["timeOut"].append(lunchtime.timeOut)
+        lunchtime = LunchTime.query.filter_by(employee_id=worker.id).first()
+        if lunchtime:
+            dct["workers"].append(worker.username)
+            dct["timeIn"].append(lunchtime.timeIn)
+            dct["timeOut"].append(lunchtime.timeOut)
+        else:
+            pass
 
     return dct
 
 
-def create_chart(data):
+def _create_chart(data):
     """
     create a bar chart
 
@@ -62,7 +65,7 @@ def create_chart(data):
     # source : a ColumnDataSource created by `create_source` function
     """
     source = ColumnDataSource(data)
-    p = figure(
+    plot = figure(
         plot_width=800,
         plot_height=400,
         title="Lunch Times",
@@ -73,15 +76,19 @@ def create_chart(data):
         tools="",
     )
 
-    p.hbar(
+    plot.hbar(
         y="workers",
         height=0.5,
         left="timeOut",
         right="timeIn",
-        color="color",
+        # color="color",
         # legend_field="workers",
         source=source,
     )
 
-    return file_html(p, CDN, "Lunch Times scheduled")
+    return plot
 
+
+def create_chart(workers):
+    data = create_source(workers)
+    return _create_chart(data)

@@ -1,6 +1,7 @@
 from app.users.utils import *
 from app.models import Employee
 from bokeh.models import ColumnDataSource
+from bokeh.plotting import Figure
 from datetime import datetime
 
 
@@ -27,6 +28,7 @@ def test_create_source(app_tester, init_database):
     assert isinstance(data["workers"], list)
     assert "JaneLong" in data["workers"]
     assert datetime(2020, 7, 15, 13, 30) in data["timeIn"]
+    assert len(data["timeIn"]) == 2
 
 
 def test_create_chart(app_tester, init_database):
@@ -35,5 +37,6 @@ def test_create_chart(app_tester, init_database):
     WHEN a verified user accesses the home page
     THEN a chart must be created for displaying current information regarding who's out when.
     """
-    source = create_source(Employee.query.all())
-    html = create_chart(source)
+    plot = create_chart(Employee.query.all())
+    assert isinstance(plot, Figure)
+

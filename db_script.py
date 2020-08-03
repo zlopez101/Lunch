@@ -29,3 +29,9 @@ with app.app_context():
         )
         db.session.add(emp)
         db.session.commit()
+
+    zach = Employee.query.filter_by(username="zlopez").first()
+    zach.phone_number = "+17134306973"
+    db.session.commit()
+
+# add the phone number

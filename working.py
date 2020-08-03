@@ -66,7 +66,7 @@ def create_chart(source):
         source=source,
     )
 
-    return file_html(p,)
+    return p
 
 
 create_chart(source)

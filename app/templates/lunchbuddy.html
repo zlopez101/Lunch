@@ -5,6 +5,8 @@
 </script>
 {% endblock %}
 {% block content %}
+{{ the_div|safe }}
+{{ the_script|safe }}
 <div class="content-section">
     <form method="POST" action="">
         {{ form.hidden_tag() }}

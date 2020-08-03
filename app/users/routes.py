@@ -1,34 +1,58 @@
 from flask import Blueprint, flash, redirect, render_template, url_for
-from flask_login import login_required, login_user, logout_user
+from flask_login import login_required, login_user, logout_user, current_user
 from bokeh.resources import CDN
-
-from app import bcrypt
-from app.models import Employee
+from bokeh.embed import components
+from app import bcrypt, db
+from app.models import Employee, LunchTime
 from app.users.forms import EmployeeLogin, EmployeeOut, ProfileForm
 from app.users.utils import send_messages, create_chart
+from datetime import date, datetime
 
 users = Blueprint("users", __name__)
 
 
-@users.route("/<int:userid>", methods=["GET", "POST"])
+@users.route("/", methods=["GET", "POST"])
 @login_required
-def lunchbuddy(userid):
-    # chart = create_chart()
+def lunchbuddy():
+    plot = create_chart(Employee.query.all())
+    script, div = components(plot)
     form = EmployeeOut()
-    employees = Employee.query.filter(
-        Employee.username != Employee.query.filter_by(id=userid).first().username
-    ).all()
-    numbers = [employee.phone_number for employee in employees]
+    # employees = Employee.query.filter(
+    #     Employee.username != Employee.query.filter_by(id=userid).first().username
+    # ).all()
+    numbers = [employee.phone_number for employee in Employee.query.all()]
     if form.validate_on_submit():
-        send_messages(form.message.data, numbers)
+        timeOut = datetime.combine(date.today(), form.time_out.data)
+        timeIn = datetime.combine(date.today(), form.time_back_in.data)
+        new_lunch = LunchTime(
+            timeOut=timeOut, timeIn=timeIn, employee_id=current_user.id,
+        )
+        db.session.add(new_lunch)
+        db.session.commit()
+        # send_messages(form.message.data, numbers)
         flash("Your message has been saved!", "Sucesss")
 
     return render_template(
-        "lunchbuddy.html", form=form, legend="Lunch Time!", resources=CDN.render()
+        "lunchbuddy.html",
+        form=form,
+        legend="Lunch Time!",
+        resources=CDN.render(),
+        the_script=script,
+        the_div=div,
     )
 
 
-@users.route("/", methods=["GET", "POST"])
+# @users.route("/add_lunch<int:userid>", methods=['GET', "POST"])
+# @login_required
+# def add_lunch():
+#     _me =  Employee.query.filter_by(id=current_user).first()
+#     form = EmployeeOut()
+#     if form.validate_on_submit():
+
+#         flash("Your message has been saved!", "Sucesss")
+#     return render_template("add_lunch.html", form=form, legend='Lunch Time!')
+
+
 @users.route("/login", methods=["GET", "POST"])
 def login():
     form = EmployeeLogin()

@@ -26,7 +26,7 @@ def load_user(user_id):
     return Employee.query.get(int(user_id))
 
 
-login_manager.login_view = "login"
+login_manager.login_view = "users.login"
 login_manager.login_message_category = "info"
 
 

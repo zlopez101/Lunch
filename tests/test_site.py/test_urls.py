@@ -3,7 +3,8 @@ from app import bcrypt
 
 
 def test_login(app_tester):
-    assert app_tester.get("/").status_code == 200
+    # should redirect to login page
+    assert app_tester.get("/").status_code == 302
 
 
 def test_user_login(app_tester, init_database):
