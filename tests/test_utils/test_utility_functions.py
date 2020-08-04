@@ -21,14 +21,13 @@ def test_create_source(app_tester, init_database):
     THEN the create source function should create a ColumnDataSource
     """
     data = create_source(Employee.query.all())
-    cds = ColumnDataSource(data)
-    assert isinstance(cds, ColumnDataSource)
-    assert "workers" in cds.column_names
+    assert isinstance(data, ColumnDataSource)
+    assert "workers" in data.column_names
 
-    assert isinstance(data["workers"], list)
-    assert "JaneLong" in data["workers"]
-    assert datetime(2020, 7, 15, 13, 30) in data["timeIn"]
-    assert len(data["timeIn"]) == 2
+    assert isinstance(data.data, dict)
+    assert "JaneLong" in data.data["workers"]
+    assert datetime(2020, 7, 15, 13, 30) in data.data["timeIn"]
+    assert len(data.data["timeIn"]) == 2
 
 
 def test_create_chart(app_tester, init_database):

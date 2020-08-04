@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 {% block js %}
-<script>
-    { { resources } }
-</script>
+{{ resources|safe }}
 {% endblock %}
 {% block content %}
 {{ the_div|safe }}

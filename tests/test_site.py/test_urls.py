@@ -4,7 +4,8 @@ from app import bcrypt
 
 def test_login(app_tester):
     # should redirect to login page
-    assert app_tester.get("/").status_code == 302
+    response = app_tester.get("/")
+    assert response.status_code == 302
 
 
 def test_user_login(app_tester, init_database):
@@ -16,6 +17,7 @@ def test_user_login(app_tester, init_database):
 
     assert response.status_code == 200
     assert b"Pass on a message!" in response.data
+    assert b"Lunch Times" in response.data
 
 
 def test_incorrect_user_login(app_tester, init_database):

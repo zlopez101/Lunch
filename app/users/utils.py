@@ -3,6 +3,8 @@ from datetime import datetime
 from bokeh.plotting import figure
 from bokeh.resources import CDN
 from bokeh.embed import file_html
+from bokeh.transform import factor_cmap
+from bokeh.palettes import Category20_15
 from bokeh.models import ColumnDataSource
 from twilio.rest import Client
 
@@ -34,29 +36,23 @@ def create_source(workers):
     Parameters
     workers : a BaseQuery object of Employees ([emp.username for emp in Employee.query.all()])
     """
-    # today = datetime.today()
-    # # right now there is no function to auto delete a LunchTime, so need to filter results
-    # _range = [
-    #     datetime(today.year, today.month, today.day, x) for x in [8, 18]
-    # ]  # creates a bottom and top filter.
-    dct = {
-        "workers": [],
-        "timeIn": [],
-        "timeOut": [],
-    }
+    source = ColumnDataSource(data=dict(workers=[], timeIn=[], timeOut=[]))
     for worker in workers:
         lunchtime = LunchTime.query.filter_by(employee_id=worker.id).first()
         if lunchtime:
-            dct["workers"].append(worker.username)
-            dct["timeIn"].append(lunchtime.timeIn)
-            dct["timeOut"].append(lunchtime.timeOut)
+            dct = {
+                "workers": [worker.username],
+                "timeIn": [lunchtime.timeIn],
+                "timeOut": [lunchtime.timeOut],
+            }
+            source.stream(dct)
         else:
             pass
 
-    return dct
+    return source
 
 
-def _create_chart(data):
+def _create_chart(source):
     """
     create a bar chart
 
@@ -64,14 +60,13 @@ def _create_chart(data):
     data : a dictionary
     # source : a ColumnDataSource created by `create_source` function
     """
-    source = ColumnDataSource(data)
     plot = figure(
         plot_width=800,
         plot_height=400,
         title="Lunch Times",
         x_axis_type="datetime",
-        x_range=[datetime(2020, 8, 1, 8), datetime(2020, 8, 1, 17)],
-        y_range=data["workers"],
+        # x_range=[datetime(2020, 8, 3, 8), datetime(2020, 8, 3, 17)],
+        y_range=source.data["workers"],
         toolbar_location=None,
         tools="",
     )
@@ -81,7 +76,7 @@ def _create_chart(data):
         height=0.5,
         left="timeOut",
         right="timeIn",
-        # color="color",
+        color=factor_cmap("workers", Category20_15, source.data["workers"]),
         # legend_field="workers",
         source=source,
     )

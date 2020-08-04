@@ -3,10 +3,11 @@
 
 
 """
-from bokeh.plotting import figure
+from bokeh.plotting import figure, show
 from bokeh.models import ColumnDataSource
 from bokeh.embed import file_html
 from bokeh.palettes import Category20_15
+from bokeh.transform import factor_cmap
 from datetime import datetime
 
 lst = [
@@ -24,14 +25,29 @@ lst = [
     "cvassar",
     "dthomas",
     "mflores",
-    "mvillatoro",
+    # "mvillatoro",
 ]
-timeOut = [11, 11, 11, 11, 12, 12, 12, 12, 13, 13, 13, 13, 14, 14, 14]
+timeOut = [
+    11,
+    11,
+    11,
+    11,
+    12,
+    12,
+    12,
+    12,
+    13,
+    13,
+    13,
+    13,
+    14,
+    14,
+]
 data = {
     "workers": lst,
     "timeOut": [datetime(2020, 8, 1, time) for time in timeOut],
     "timeIn": [datetime(2020, 8, 1, time) for time in [(x + 1) for x in timeOut]],
-    "color": Category20_15,
+    # "color": Category20_15,
 }
 
 source = ColumnDataSource(data)
@@ -61,12 +77,12 @@ def create_chart(source):
         height=0.5,
         left="timeOut",
         right="timeIn",
-        color="color",
+        color=factor_cmap("workers", Category20_15, source.data["workers"]),
         # legend_field="workers",
         source=source,
     )
 
-    return p
+    show(p)
 
 
 create_chart(source)

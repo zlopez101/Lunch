@@ -30,7 +30,8 @@ def lunchbuddy():
         db.session.add(new_lunch)
         db.session.commit()
         # send_messages(form.message.data, numbers)
-        flash("Your message has been saved!", "Sucesss")
+        flash("Your message has been saved!", "success")
+        return redirect(url_for("users.lunchbuddy"))
 
     return render_template(
         "lunchbuddy.html",
@@ -42,15 +43,13 @@ def lunchbuddy():
     )
 
 
-# @users.route("/add_lunch<int:userid>", methods=['GET', "POST"])
-# @login_required
-# def add_lunch():
-#     _me =  Employee.query.filter_by(id=current_user).first()
-#     form = EmployeeOut()
-#     if form.validate_on_submit():
-
-#         flash("Your message has been saved!", "Sucesss")
-#     return render_template("add_lunch.html", form=form, legend='Lunch Time!')
+@users.route("/plot")
+def plot():
+    plot = create_chart(Employee.query.all())
+    script, div = components(plot)
+    return render_template(
+        "plot.html", resources=CDN.render(), the_script=script, the_div=div,
+    )
 
 
 @users.route("/login", methods=["GET", "POST"])
@@ -95,7 +94,7 @@ def profile(userid):
 @users.route("/logout")
 def logout():
     logout_user()
-    return redirect("users.login")
+    return redirect(url_for("users.login"))
 
 
 @users.route("/reset")
