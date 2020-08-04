@@ -5,7 +5,7 @@ from bokeh.resources import CDN
 from bokeh.embed import file_html
 from bokeh.transform import factor_cmap
 from bokeh.palettes import Category20_15
-from bokeh.models import ColumnDataSource
+from bokeh.models import ColumnDataSource, DatetimeTickFormatter
 from bokeh.models.tools import HoverTool
 from twilio.rest import Client
 
@@ -37,14 +37,24 @@ def create_source(workers):
     Parameters
     workers : a BaseQuery object of Employees ([emp.username for emp in Employee.query.all()])
     """
+    today = datetime.today()
+    beg, end = [
+        datetime(today.year, today.month, today.day),
+        datetime(today.year, today.month, today.day, 23, 59),
+    ]
+
     source = ColumnDataSource(data=dict(workers=[], timeIn=[], timeOut=[]))
     for worker in workers:
-        lunchtime = LunchTime.query.filter_by(employee_id=worker.id).first()
-        if lunchtime:
+        todays_lunch = LunchTime.query.filter(
+            LunchTime.employee_id == worker.id,
+            LunchTime.timeIn > beg,
+            LunchTime.timeOut < end,
+        ).first()
+        if todays_lunch:
             dct = {
                 "workers": [worker.username],
-                "timeIn": [lunchtime.timeIn],
-                "timeOut": [lunchtime.timeOut],
+                "timeIn": [todays_lunch.timeIn],
+                "timeOut": [todays_lunch.timeOut],
             }
             source.stream(dct)
         else:
@@ -96,6 +106,7 @@ def _create_chart(source):
             formatters={"@timeIn": "datetime", "@timeOut": "datetime"},
         )
     )
+    plot.xaxis[0].formatter = DatetimeTickFormatter(hourmin="%H:%M")
     return plot
 
 

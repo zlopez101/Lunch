@@ -42,3 +42,34 @@ def test_LunchTime(app_tester, init_database):
     assert janes_lunch.timeOut == datetime(2020, 7, 15, 12, 30)
     assert janes_lunch.employee_id == 2
 
+
+def test_get_todays_LunchTime(app_tester, init_database):
+    """
+    GIVEN multiple LunchTime entities for a worker
+    WHEN a user accesses the website
+    THEN only a LunchTime that is valid for today should be returned
+    """
+    today = datetime.today()
+    beg, end = [
+        datetime(today.year, today.month, today.day),
+        datetime(today.year, today.month, today.day, 23, 59),
+    ]
+
+    # jane puts in a new lunch for today from 12:30 pm to 1:30 pm
+    newlunch = LunchTime(
+        timeIn=datetime(today.year, today.month, today.day, 12),
+        timeOut=datetime(today.year, today.month, today.day, 13),
+        employee_id=2,
+    )
+    init_database.session.add(newlunch)
+    init_database.session.commit()
+
+    janes_lunchs = LunchTime.query.filter_by(employee_id=2).all()
+    assert len(janes_lunchs) == 2
+
+    todays_lunch = LunchTime.query.filter(
+        LunchTime.employee_id == 2, LunchTime.timeIn > beg, LunchTime.timeOut < end,
+    ).first()
+
+    assert todays_lunch.timeIn == newlunch.timeIn
+    assert todays_lunch.timeOut == newlunch.timeOut
