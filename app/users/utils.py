@@ -6,6 +6,7 @@ from bokeh.embed import file_html
 from bokeh.transform import factor_cmap
 from bokeh.palettes import Category20_15
 from bokeh.models import ColumnDataSource
+from bokeh.models.tools import HoverTool
 from twilio.rest import Client
 
 from app.models import LunchTime
@@ -60,6 +61,14 @@ def _create_chart(source):
     data : a dictionary
     # source : a ColumnDataSource created by `create_source` function
     """
+    # hover tool configuration
+
+    TOOLTIPS = [
+        ("worker", "@workers"),
+        ("time Out", "@timeOut{%T}"),
+        ("time In", "@timeIn{%T}"),
+    ]
+
     plot = figure(
         plot_width=800,
         plot_height=400,
@@ -81,6 +90,12 @@ def _create_chart(source):
         source=source,
     )
 
+    plot.add_tools(
+        HoverTool(
+            tooltips=TOOLTIPS,
+            formatters={"@timeIn": "datetime", "@timeOut": "datetime"},
+        )
+    )
     return plot
 
 
