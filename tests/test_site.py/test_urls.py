@@ -46,5 +46,9 @@ def test_profile_update(app_tester, init_database):
     # check email update
     # check phone update
     # check preference update
-    pass
+    response = app_tester.post(
+        "/login",
+        data=dict(username="JaneLong", password="password"),
+        follow_redirects=True,
+    )
 

@@ -81,6 +81,7 @@ def profile(userid):
     if form.validate_on_submit():
         emp.email = form.email.data
         emp.phone_number = form.phone.data
+        emp.preferred = form.preferred.data
         db.session.commit()
         return redirect(url_for("users.lunchbuddy"))
     return render_template(

@@ -29,6 +29,9 @@ class ProfileForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired()])
     phone = StringField("Phone number", validators=[DataRequired()])
     preferred = SelectField(
-        "Preferred Notification Style", coerce=int, choices=[(1, "phone"), (2, "email")]
+        "Preferred Notification Style",
+        coerce=int,
+        choices=[(1, "phone"), (2, "email")],
+        validators=[DataRequired()],
     )
     submit = SubmitField("Submit")
