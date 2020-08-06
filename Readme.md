@@ -3,4 +3,5 @@
 ## to do list
 
 1. need to add css page
-2. 
+2. add navbar
+

@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, redirect, render_template, url_for
+from flask import Blueprint, flash, redirect, render_template, url_for, request
 from flask_login import login_required, login_user, logout_user, current_user
 from bokeh.resources import CDN
 from bokeh.embed import components
@@ -70,20 +70,21 @@ def login():
     return render_template("login.html", form=form, legend="Please Login")
 
 
-@users.route("/profile/<int:userid>", methods=["GET", "POST"])
+@users.route("/profile", methods=["GET", "POST"])
 @login_required
-def profile(userid):
-    emp = Employee.query.filter_by(id=userid).first()
+def profile():
+    emp = Employee.query.filter_by(id=current_user.id).first()
     form = ProfileForm()
-    form.email.data = emp.email
-    form.phone.data = emp.phone_number
-    # form.preferred.data = emp.preferred
     if form.validate_on_submit():
         emp.email = form.email.data
         emp.phone_number = form.phone.data
         emp.preferred = form.preferred.data
         db.session.commit()
         return redirect(url_for("users.lunchbuddy"))
+    elif request.method == "GET":
+        form.email.data = emp.email
+        form.phone.data = emp.phone_number
+
     return render_template(
         "profile.html",
         title="Profile",
