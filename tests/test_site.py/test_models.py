@@ -10,13 +10,17 @@ def test_Employee(app_tester, init_database):
     THEN check employees can be added and deleted from database
     """
 
-    emp2 = Employee(username="testing", password="password")
+    emp2 = Employee(username="testing", password="password", preferred="phone")
     init_database.session.add(emp2)
     init_database.session.commit()
 
     emps = Employee.query.all()
     assert len(emps) == 3
     assert emps[-1].username == "testing"
+
+    phones = Employee.query.filter_by(preferred="phone").all()
+    assert len(phones) == 2
+    assert emps[0].username == "JohnDoe"
 
     init_database.session.delete(emp2)
     init_database.session.commit()

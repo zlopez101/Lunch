@@ -61,10 +61,13 @@ def login():
             employee.password, form.password.data
         ):
             login_user(employee)
-            # next_page = request.args.get("next")
-            return redirect(
-                url_for("users.lunchbuddy", userid=int(employee.id))
-            )  # if next_page else redirect(url_for("home"))
+            next_page = request.args.get("next")
+            return (
+                redirect(next_page)
+                if next_page
+                else redirect(url_for("users.lunchbuddy"))
+            )
+
         else:
             flash("Login Unsuccessful", "danger")
     return render_template("login.html", form=form, legend="Please Login")

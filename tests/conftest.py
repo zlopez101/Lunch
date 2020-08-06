@@ -31,10 +31,18 @@ def init_database(scope="module"):
     db.create_all()
 
     emp1 = Employee(
-        username="JohnDoe", password=bcrypt.generate_password_hash("password")
+        username="JohnDoe",
+        password=bcrypt.generate_password_hash("password"),
+        email="john_doe@gmail.com",
+        phone_number="john's phone",
+        preferred="phone",
     )
     emp2 = Employee(
-        username="JaneLong", password=bcrypt.generate_password_hash("differentpassword")
+        username="JaneLong",
+        password=bcrypt.generate_password_hash("differentpassword"),
+        email="jane_long@gmail.com",
+        phone_number="jane's phone",
+        preferred="email",
     )
 
     lunchtime1 = LunchTime(
@@ -57,3 +65,4 @@ def init_database(scope="module"):
     yield db
 
     db.drop_all()
+
