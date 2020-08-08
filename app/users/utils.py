@@ -75,8 +75,8 @@ def _create_chart(source):
 
     TOOLTIPS = [
         ("worker", "@workers"),
-        ("time Out", "@timeOut{%T}"),
-        ("time In", "@timeIn{%T}"),
+        ("time Out", "@timeOut{%r}"),
+        ("time In", "@timeIn{%r}"),
     ]
 
     plot = figure(

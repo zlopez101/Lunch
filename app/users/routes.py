@@ -7,6 +7,7 @@ from app.models import Employee, LunchTime
 from app.users.forms import EmployeeLogin, EmployeeOut, ProfileForm
 from app.users.utils import send_messages, create_chart
 from datetime import date, datetime
+import threading
 
 users = Blueprint("users", __name__)
 
