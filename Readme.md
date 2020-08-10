@@ -25,9 +25,6 @@ I'd like for users to be able to text their lunch schedule to the twilio number,
 
 * Storing all lunchs taken by users, and auto-completing for recent lunchs taken?
 
-* Prett-ify the website
-    * could make the website look more pleasing,
-
 * Prevention of certain LunchTimes
     * Ideally, employees would stagger their lunchs so that everyone wouldn't be off at the same time. However, I could set up an internal monitoring system that manages LunchTime creation. If x % of folks have already taken a lunch between certain hours, no more Lunchs could be taken until the end of some period.
 
@@ -42,7 +39,8 @@ I'd like for users to be able to text their lunch schedule to the twilio number,
     * create flask endpoint for twilio receiving
     * this cannot be done with a private ip address...need to serve the app and get a domain name...
 
-    ### Hold on this task
-
-3. 
+3. Prett-ify the website
+    * constrain the content section
+    * display the graph on the right
+    * display names on the bars of graph
 
