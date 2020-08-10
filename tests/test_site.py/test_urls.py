@@ -2,7 +2,7 @@ import pytest
 from app import bcrypt
 
 
-def login(client, username, password):
+def login(client, username="JohnDoe", password="password"):
     return client.post(
         "/login", data=dict(username=username, password=password), follow_redirects=True
     )
@@ -20,14 +20,14 @@ def test_user_login(app_tester, init_database):
     #     data=dict(username="JohnDoe", password="password"),
     #     follow_redirects=True,
     # )
-    response = login(app_tester, "JohnDoe", "password")
+    response = login(app_tester)
     assert response.status_code == 200
     assert b"Pass on a message!" in response.data
     assert b"Lunch Times" in response.data
 
 
 def test_incorrect_user_login(app_tester, init_database):
-    response = login(app_tester, "JaneLong", "password")
+    response = login(app_tester, username="JaneLong", password="password")
     assert response.status_code == 200
     assert b"Login Unsuccessful" in response.data
 
@@ -45,7 +45,7 @@ def test_profile_update(app_tester, init_database):
     WHEN user modifies profile
     THEN check that new preferences are saved
     """
-    login(app_tester, "JaneLong", "differentpassword")
+    login(app_tester, username="JaneLong", password="differentpassword")
     response = app_tester.get("/profile")
 
     # check email fields
@@ -72,3 +72,14 @@ def test_profile_update(app_tester, init_database):
     # check phone fields
     assert b"Phone number" in changing_response.data
     assert b"new_phone" in changing_response.data
+
+
+def test_email_connection(app_tester, init_database):
+    """
+    test whether an email was sent after creation of a time
+    """
+    with mail.record_messages() as outbox:
+        login(app_tester)
+        app_tester.post("/lunchbuddy", data=dict())  # need to finish
+        assert len(outbox) == 1
+        assert outbox[0].subject == "testing"  # will be the f-string of message

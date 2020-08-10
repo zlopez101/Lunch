@@ -1,11 +1,12 @@
 from flask import Blueprint, flash, redirect, render_template, url_for, request
 from flask_login import login_required, login_user, logout_user, current_user
+from flask_mail import Message
 from bokeh.resources import CDN
 from bokeh.embed import components
-from app import bcrypt, db
+from app import bcrypt, db, mail
 from app.models import Employee, LunchTime
 from app.users.forms import EmployeeLogin, EmployeeOut, ProfileForm
-from app.users.utils import send_messages, create_chart
+from app.users.utils import send_messages, create_chart, create_mail_message
 from datetime import date, datetime
 import threading
 
@@ -15,22 +16,26 @@ users = Blueprint("users", __name__)
 @users.route("/", methods=["GET", "POST"])
 @login_required
 def lunchbuddy():
+    # chart
     plot = create_chart(Employee.query.all())
     script, div = components(plot)
+
+    # form
     form = EmployeeOut()
-    # employees = Employee.query.filter(
-    #     Employee.username != Employee.query.filter_by(id=userid).first().username
-    # ).all()
-    numbers = [employee.phone_number for employee in Employee.query.all()]
     if form.validate_on_submit():
         timeOut = datetime.combine(date.today(), form.time_out.data)
         timeIn = datetime.combine(date.today(), form.time_back_in.data)
         new_lunch = LunchTime(
             timeOut=timeOut, timeIn=timeIn, employee_id=current_user.id,
         )
+
         db.session.add(new_lunch)
         db.session.commit()
-        # send_messages(form.message.data, numbers)
+
+        # send emails
+        mail.send(create_mail_message(new_lunch))
+        # send texts
+
         flash("Your message has been saved!", "success")
         return redirect(url_for("users.lunchbuddy"))
 

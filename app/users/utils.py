@@ -8,8 +8,26 @@ from bokeh.palettes import Category20_15
 from bokeh.models import ColumnDataSource, DatetimeTickFormatter
 from bokeh.models.tools import HoverTool
 from twilio.rest import Client
+from flask_mail import Message
 
-from app.models import LunchTime
+from app.models import LunchTime, Employee
+
+
+def create_mail_message(Lunch):
+    """
+    Should send an email to everyone 
+
+    Parameters
+    Lunch : a LunchTime 
+    """
+    recipients = [
+        emp.email for emp in Employee.query.filter_by(preferred="email").all()
+    ]
+    msg = Message(
+        f"{Employee.query.filter_by(id=Lunch.employee_id)} is taking a lunch from {Lunch.timeOut} to {Lunch.timeIn}. Please cover the their shift.",
+        recipients=recipients,
+    )
+    return msg
 
 
 def send_messages(message, numbers, testing=False):
