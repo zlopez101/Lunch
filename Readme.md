@@ -5,10 +5,11 @@ I wrote this python application to fix the flood of emails I was receiving from 
 and how they were covering others who had gone to lunch. I am sure there are many apps that could easily help with the situation, 
 but it was a good excuse to build a Flask App.
 
-I integreated this app with twilio messaging. Twilio is a great platform that allows you to experiment for free all types of
+I integrated this app with twilio messaging. Twilio is a great platform that allows you to experiment for free all types of
 communications technology. 
 
-### Twilio currently won't re
+### Twilio currently won't allow text messages receiving to POST methods to private IP addresses. 
+I'd like for users to be able to text their lunch schedule to the twilio number, and that number to make a POST request to the website, where the lunch would be catalogued, graphed, and notification created. Because I haven't set a public domain name, twilio's API won't allow a POST request to private IP address. 
 
 ## Design Considerations
 
