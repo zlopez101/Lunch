@@ -78,8 +78,15 @@ def test_email_connection(app_tester, init_database):
     """
     test whether an email was sent after creation of a time
     """
+    from app import mail
+
     with mail.record_messages() as outbox:
         login(app_tester)
-        app_tester.post("/lunchbuddy", data=dict())  # need to finish
+        app_tester.post(
+            "/lunchbuddy",
+            data=dict(message="Hello", time_out="12:30", time_back_in="13:30"),
+        )
         assert len(outbox) == 1
-        assert outbox[0].subject == "testing"  # will be the f-string of message
+        assert (
+            outbox[0].subject == "New Lunch Time created."
+        )  # will be the f-string of message

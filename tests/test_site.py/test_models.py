@@ -28,6 +28,7 @@ def test_Employee(app_tester, init_database):
     emps = Employee.query.all()
     assert len(emps) == 2
     assert emps[-1].username == "JaneLong"
+    assert emps[-1].phone_number == "jane's phone"
 
 
 def test_LunchTime(app_tester, init_database):

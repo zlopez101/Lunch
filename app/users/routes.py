@@ -85,9 +85,12 @@ def profile():
     emp = Employee.query.filter_by(id=current_user.id).first()
     form = ProfileForm()
     if form.validate_on_submit():
+        # transalate the preferred
+        preferred_dict = {1: "phone", 2: "email"}
+
         emp.email = form.email.data
         emp.phone_number = form.phone.data
-        emp.preferred = form.preferred.data
+        emp.preferred = preferred_dict[form.preferred.data]
         db.session.commit()
         return redirect(url_for("users.lunchbuddy"))
     elif request.method == "GET":

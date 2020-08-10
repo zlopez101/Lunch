@@ -24,9 +24,10 @@ def create_mail_message(Lunch):
         emp.email for emp in Employee.query.filter_by(preferred="email").all()
     ]
     msg = Message(
-        f"{Employee.query.filter_by(id=Lunch.employee_id)} is taking a lunch from {Lunch.timeOut} to {Lunch.timeIn}. Please cover the their shift.",
+        f"{Employee.query.filter_by(id=Lunch.employee_id).first().username} is taking a lunch from {Lunch.timeOut.strftime('%H:%M')} to {Lunch.timeIn.strftime('%H:%M')}. Please cover their shift.",
         recipients=recipients,
     )
+    # msg.body = f"{Employee.query.filter_by(id=Lunch.employee_id).first().username} is taking a lunch from {Lunch.timeOut.strftime('%H:%M')} to {Lunch.timeIn.strftime('%H:%M')}. Please cover their shift."
     return msg
 
 
