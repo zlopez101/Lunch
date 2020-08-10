@@ -22,8 +22,8 @@ class Configuration_tester:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     TESTING = True
     WTF_CSRF_ENABLED = False
-    MAIL_DEFAULT_SENDER = "uthelpsinsurance@gmail.com"
     MAIL_SERVER = "smtp.gmail.com"
+    MAIL_DEFAULT_SENDER = "uthelpsinsurance@gmail.com"
     MAIL_USERNAME = "uthelpsinsurance@gmail.com"
     MAIL_PASSWORD = "Pinkfloyd2#"
     MAIL_PORT = 465

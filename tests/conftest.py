@@ -34,14 +34,14 @@ def init_database(scope="module"):
         username="JohnDoe",
         password=bcrypt.generate_password_hash("password"),
         email="john_doe@gmail.com",
-        phone_number="john's phone",
+        phone_number="johnsphone",
         preferred="phone",
     )
     emp2 = Employee(
         username="JaneLong",
         password=bcrypt.generate_password_hash("differentpassword"),
         email="jane_long@gmail.com",
-        phone_number="jane's phone",
+        phone_number="janephone",
         preferred="email",
     )
 

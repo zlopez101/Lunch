@@ -30,6 +30,11 @@ def test_Employee(app_tester, init_database):
     assert emps[-1].username == "JaneLong"
     assert emps[-1].phone_number == "jane's phone"
 
+    emails = Employee.query.filter_by(preferred="email").all()
+
+    assert len(emails) == 1
+    assert emails[0].email == "jane_long@gmail.com"
+
 
 def test_LunchTime(app_tester, init_database):
     """

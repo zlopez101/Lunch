@@ -32,13 +32,6 @@ def test_incorrect_user_login(app_tester, init_database):
     assert b"Login Unsuccessful" in response.data
 
 
-def test_notication(app_tester, init_database):
-    """
-    test that a given user JohnDoe emits a notifications to all users except himself
-    """
-    pass
-
-
 def test_profile_update(app_tester, init_database):
     """
     GIVEN a verified user
@@ -54,7 +47,7 @@ def test_profile_update(app_tester, init_database):
 
     # check phone fields
     assert b"Phone number" in response.data
-    assert b"jane's phone" in response.data
+    assert b"janephone" in response.data
 
     # now change the data
     changing_response = app_tester.post(
@@ -83,10 +76,28 @@ def test_email_connection(app_tester, init_database):
     with mail.record_messages() as outbox:
         login(app_tester)
         app_tester.post(
-            "/lunchbuddy",
-            data=dict(message="Hello", time_out="12:30", time_back_in="13:30"),
+            "/", data=dict(message="Hello", time_out="12:30", time_back_in="13:30"),
         )
         assert len(outbox) == 1
         assert (
-            outbox[0].subject == "New Lunch Time created."
-        )  # will be the f-string of message
+            outbox[0].subject
+            == "JohnDoe is taking a lunch from 12:30 to 13:30. Please cover their shift."
+        )
+
+    # # check whether email sent after profile preferences changed
+
+    # login(app_tester, username="JaneLong", password="differentpassword")
+    # app_tester.post(
+    #     "/profile",
+    #     data={
+    #         "email": "jane_long2@gmail.com",
+    #         "phone": "new_phone",
+    #         "preferred": "phone",
+    #     },
+    # )
+    # with mail.record_messages() as new_outbox:
+    #     app_tester.post(
+    #         "/", data=dict(message="Hello", time_out="12:30", time_back_in="13:30"),
+    #     )
+    #     assert len(new_outbox) == 0
+
